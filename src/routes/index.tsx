@@ -1,4 +1,80 @@
 import { A } from "@solidjs/router";
+import { For } from "solid-js";
+
+const lessons = [
+  {
+    children: "Lesson 1 - Starter",
+    href: "./lessons/1-starter",
+    references: [
+      {
+        href: "https://sbcode.net/threejs/",
+        children: "Three.js Tutorial",
+      },
+      {
+        href: "https://sbcode.net/threejs/introduction/",
+        children: "Introduction - Three.js Tutorial",
+      },
+      {
+        href: "https://sbcode.net/threejs/setup-dev/",
+        children: "Setup Development Environment - Three.js Tutorial",
+      },
+      {
+        href: "https://sbcode.net/threejs//install-threejs-and-types/",
+        children: "Install Three.js and @three/types - Three.js Tutorial",
+      },
+      {
+        href: "https://sbcode.net/threejs/importing-threejs-modules/",
+        children: "Importing Three.js Modules - Three.js Tutorial",
+      },
+      {
+        href: "https://sbcode.net/threejs/stats-panel-module/",
+        children: "Stats Panel - Three.js Tutorial",
+      },
+      {
+        href: "https://sbcode.net/threejs/dat-gui-module/",
+        children: "Dat GUI - Three.js Tutorial",
+      },
+      {
+        href: "https://sbcode.net/threejs/threejs-boilerplate-typescript-vite/",
+        children: "Install Three.js Course Boilerplate - Three.js Tutorial",
+      },
+      {
+        href: "https://sbcode.net/threejs/renderer/",
+        children: "Renderer - Three.js Tutorial",
+      },
+    ],
+  },
+  {
+    children: "Lesson 2 - Scene",
+    href: "./lessons/2-scene",
+    references: [
+      {
+        href: "https://sbcode.net/threejs/scene/",
+        children: "Scene - Three.js Tutorial",
+      },
+    ],
+  },
+  {
+    children: "Lesson 3 - Camera",
+    href: "./lessons/3-camera",
+    references: [
+      {
+        href: "https://sbcode.net/threejs/camera/",
+        children: "Camera - Three.js Tutorial",
+      },
+    ],
+  },
+  {
+    children: "Lesson 4 - Animation Loop",
+    href: "./lessons/4-animation-loop",
+    references: [
+      {
+        href: "https://sbcode.net/threejs/render-loop/",
+        children: "Animation Loop - Three.js Tutorial",
+      },
+    ],
+  },
+];
 
 export default function Home() {
   return (
@@ -8,16 +84,15 @@ export default function Home() {
       </h1>
       <p>Lessons</p>
       <ul>
-        <li class="my-4">
-          <A href="./lessons/1-starter" class="text-sky-600 hover:underline">
-            Lesson 1 - Starter
-          </A>
-        </li>
-        <li class="my-4">
-          <A href="./lessons/2-scene" class="text-sky-600 hover:underline">
-            Lesson 2 - Scene
-          </A>
-        </li>
+        <For each={lessons}>
+          {(lesson) => (
+            <li class="my-4">
+              <A href={lesson.href} class="text-sky-600 hover:underline">
+                {lesson.children}
+              </A>
+            </li>
+          )}
+        </For>
       </ul>
     </main>
   );

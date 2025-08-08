@@ -42,6 +42,10 @@ const lessons = [
         href: "https://sbcode.net/threejs/renderer/",
         children: "Renderer - Three.js Tutorial",
       },
+      {
+        href: "https://fennec-hub.github.io/three-viewport-gizmo/",
+        children: "Three Viewport Gizmo - Docs",
+      },
     ],
   },
   {
@@ -71,6 +75,20 @@ const lessons = [
       {
         href: "https://sbcode.net/threejs/render-loop/",
         children: "Animation Loop - Three.js Tutorial",
+      },
+    ],
+  },
+  {
+    children: "Lesson 5 - Object3D",
+    href: "./lessons/5-object3d",
+    references: [
+      {
+        href: "https://sbcode.net/threejs/three-object3d/",
+        children: "Object3D - Three.js Tutorial",
+      },
+      {
+        href: "https://sbcode.net/threejs/three-object3d-hierarchy/",
+        children: "Object3D Hierarchy - Three.js Tutorial",
       },
     ],
   },

@@ -5,7 +5,35 @@ import { ViewportGizmo } from "three-viewport-gizmo";
 import { OrbitControls } from "three/examples/jsm/Addons.js";
 import Stats from "three/examples/jsm/libs/stats.module.js";
 
-export default function StarterLesson() {
+function addObjectToGui(props: {
+  object: THREE.Object3D;
+  name: string;
+  gui: GUI;
+}) {
+  const cubeFolder = props.gui.addFolder(props.name);
+  cubeFolder.add(props.object, "visible");
+  cubeFolder.open();
+
+  const positionFolder = cubeFolder.addFolder("Position");
+  positionFolder.add(props.object.position, "x", -10, 10);
+  positionFolder.add(props.object.position, "y", -10, 10);
+  positionFolder.add(props.object.position, "z", -10, 10);
+  positionFolder.close();
+
+  const rotationFolder = cubeFolder.addFolder("Rotation");
+  rotationFolder.add(props.object.rotation, "x", 0, Math.PI * 2);
+  rotationFolder.add(props.object.rotation, "y", 0, Math.PI * 2);
+  rotationFolder.add(props.object.rotation, "z", 0, Math.PI * 2);
+  rotationFolder.close();
+
+  const scaleFolder = cubeFolder.addFolder("Scale");
+  scaleFolder.add(props.object.scale, "x", -5, 5);
+  scaleFolder.add(props.object.scale, "y", -5, 5);
+  scaleFolder.add(props.object.scale, "z", -5, 5);
+  scaleFolder.close();
+}
+
+export default function Object3dLesson() {
   let mainContainerRef: HTMLDivElement | undefined;
   let canvasRef: HTMLCanvasElement | undefined;
   let endSideMenuContainerRef: HTMLDivElement | undefined;
@@ -44,7 +72,7 @@ export default function StarterLesson() {
       0.1,
       1000
     );
-    camera.position.z = 1.5;
+    camera.position.set(4, 4, 4);
 
     const renderer = new THREE.WebGLRenderer({ canvas: canvasRef });
     /** @cleanup */ addCleanup(renderer.dispose);
@@ -60,11 +88,19 @@ export default function StarterLesson() {
       container: startSideMenuContainerRef,
       addCleanup,
     });
+    const debug = document.createElement("pre");
+    debug.className = "monospace text-xs text-white pointer-events-none";
+    startSideMenuContainerRef.appendChild(debug);
+    /** @cleanup */ addCleanup(() => {
+      debug.parentElement?.removeChild(debug);
+    });
 
     const orbitControls = new OrbitControls(camera, renderer.domElement);
     /** @cleanup */ addCleanup(() => {
       orbitControls.dispose();
     });
+    orbitControls.target.set(8, 0, 0);
+    orbitControls.update();
 
     const { gizmo, gui } = setupEndSideMenu({
       container: endSideMenuContainerRef,
@@ -86,22 +122,71 @@ export default function StarterLesson() {
       window.removeEventListener("resize", resizeHandler);
     });
 
-    const geometry = new THREE.BoxGeometry();
-    const material = new THREE.MeshNormalMaterial({ wireframe: true });
+    const light = new THREE.PointLight(0xffffff, 400);
+    light.position.set(10, 10, 10);
+    scene.add(light);
 
-    const cube = new THREE.Mesh(geometry, material);
-    scene.add(cube);
+    const object1 = new THREE.Mesh(
+      new THREE.SphereGeometry(),
+      new THREE.MeshPhongMaterial({ color: 0xff0000 })
+    );
+    scene.add(object1);
+    object1.position.set(4, 0, 0);
+    object1.add(new THREE.AxesHelper(5));
+    addObjectToGui({ object: object1, name: "Object 1 (Red Ball)", gui });
+
+    const object2 = new THREE.Mesh(
+      new THREE.SphereGeometry(),
+      new THREE.MeshPhongMaterial({ color: 0x00ff00 })
+    );
+    object1.add(object2);
+    object2.position.set(4, 0, 0);
+    object2.add(new THREE.AxesHelper(5));
+    addObjectToGui({ object: object2, name: "Object 2 (Green Ball)", gui });
+
+    const object3 = new THREE.Mesh(
+      new THREE.SphereGeometry(),
+      new THREE.MeshPhongMaterial({ color: 0x0000ff })
+    );
+    object2.add(object3);
+    object3.position.set(4, 0, 0);
+    object3.add(new THREE.AxesHelper(5));
+    addObjectToGui({ object: object3, name: "Object 3 (Blue Ball)", gui });
 
     let animateId: number | undefined;
 
-    const clock = new THREE.Clock();
-
     function animate() {
       animateId = requestAnimationFrame(animate);
-      const delta = clock.getDelta();
 
-      cube.rotation.x += delta;
-      cube.rotation.y += delta;
+      const object1WorldPosition = new THREE.Vector3();
+      object1.getWorldPosition(object1WorldPosition);
+      const object2WorldPosition = new THREE.Vector3();
+      object2.getWorldPosition(object2WorldPosition);
+      const object3WorldPosition = new THREE.Vector3();
+      object3.getWorldPosition(object3WorldPosition);
+
+      debug.innerText =
+        "Red\n" +
+        "Local Pos X : " +
+        object1.position.x.toFixed(2) +
+        "\n" +
+        "World Pos X : " +
+        object1WorldPosition.x.toFixed(2) +
+        "\n" +
+        "\nGreen\n" +
+        "Local Pos X : " +
+        object2.position.x.toFixed(2) +
+        "\n" +
+        "World Pos X : " +
+        object2WorldPosition.x.toFixed(2) +
+        "\n" +
+        "\nBlue\n" +
+        "Local Pos X : " +
+        object3.position.x.toFixed(2) +
+        "\n" +
+        "World Pos X : " +
+        object3WorldPosition.x.toFixed(2) +
+        "\n";
 
       renderer.render(scene, camera);
       gizmo.render();
